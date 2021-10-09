@@ -25,12 +25,17 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "ParseForm() err: %v", err)
 		return
 	}
-	fmt.Fprintf(w, "POST request succesful")
-	name := r.FormValue("name")
-	address := r.FormValue("address")
+	fmt.Fprintf(w, "POST request succesful\n")
+	//current location
+	currentCity := r.FormValue("currentCity")
+	currentCountry := r.FormValue("currentCountry")
+	//destination location
+	destinationCity := r.FormValue("destinationCity")
+	destinationCountry := r.FormValue("destinationCountry")
 
-	fmt.Fprintf(w, "Name = %s\n", name)
-	fmt.Fprintf(w, "Address = %s\n", address)
+	fmt.Fprintf(w, "Current Location: %s, %s\n", currentCity, currentCountry)
+
+	fmt.Fprintf(w, "Destination: %s, %s\n", destinationCity, destinationCountry)
 }
 
 func main() {

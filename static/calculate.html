@@ -1,0 +1,29 @@
+<html>
+    <head>
+        <title>
+            driveorfly.org
+        </title>
+        <meta charset="UTF-8"/>
+    </head>
+    <body>
+        <h2>
+            Should i drive or fly?
+        </h2>
+        <main>
+            <section><!--TODO: Form needs exact city and country location-->
+                <form method="POST" action="/form">     
+                    <label>Current Location</label>
+                    <br>
+                    <input name="currentCity" type="text" placeholder="current city"/>
+                    <input name="currentCountry" type="text" placeholder="current country"/>
+                    <br>
+                    <label>Destination</label>
+                    <br>
+                    <input name="destinationCity" type="text" placeholder="destination city"/>
+                    <input name="destinationCountry" type="text" placeholder="destination country"/>
+                    
+                    <br>
+                    <input type="submit" value="submit" />
+                </form>
+            </section>
+        </main> 
