@@ -1,11 +1,13 @@
 package main
 
 import (
-	"encoding/json"
+//	"encoding/json"
 	"fmt"
-	"io/ioutil"
+//	"io/ioutil"
 	"log"
 	"net/http"
+	"github.com/mkrou/geonames"
+	"github.com/mkrou/geonames/models"
 )
 
 //Struct for .json from first api call
@@ -43,30 +45,42 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//current location api request
-	response, err := http.Get("https://api.teleport.org/api/cities/?search=" + r.FormValue("currentCity"))
-	responseData, err := ioutil.ReadAll(response.Body)
-	//create struct to store .json from request
-	var currentCity City
-	err = json.Unmarshal(responseData, &currentCity)
-	if err != nil {
+	p := geonames.NewParser()
+	err := p.GetGeonames(geonames.AllCountries, func(geoname  *models.Geoname) error {
+		if(geoname.Name == "Berlin"){
+			fmt.Println(geoname.Name, geoname.ID)
+		}
+		return nil
+	})
+	if err != nil{
 		log.Fatal(err)
 	}
 
-	requestedURLcurrentCity := currentCity.Embedded.CitySearchResults[0].Links.CityItem.Href
-	fmt.Println(requestedURLcurrentCity)
-	//destination location api request
-	response, err = http.Get("https://api.teleport.org/api/cities/?search=" + r.FormValue("destinationCity"))
-	responseData, err = ioutil.ReadAll(response.Body)
-	//create stuct to store .json from request
-	var destinationCity City
-	err = json.Unmarshal(responseData, &destinationCity)
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	requestedURLdestinationCity := destinationCity.Embedded.CitySearchResults[0].Links.CityItem.Href
-	fmt.Println(requestedURLdestinationCity)
+//	//current location api request
+//	response, err := http.Get("https://api.teleport.org/api/cities/?search=" + r.FormValue("currentCity"))
+//	responseData, err := ioutil.ReadAll(response.Body)
+//	//create struct to store .json from request
+//	var currentCity City
+//	err = json.Unmarshal(responseData, &currentCity)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	requestedURLcurrentCity := currentCity.Embedded.CitySearchResults[0].Links.CityItem.Href
+//	fmt.Println(requestedURLcurrentCity)
+//	//destination location api request
+//	response, err = http.Get("https://api.teleport.org/api/cities/?search=" + r.FormValue("destinationCity"))
+//	responseData, err = ioutil.ReadAll(response.Body)
+//	//create stuct to store .json from request
+//	var destinationCity City
+//	err = json.Unmarshal(responseData, &destinationCity)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	requestedURLdestinationCity := destinationCity.Embedded.CitySearchResults[0].Links.CityItem.Href
+//	fmt.Println(requestedURLdestinationCity)
 }
 
 func main() {
