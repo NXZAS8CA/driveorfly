@@ -2,9 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"time"
 )
 
 //Struct for first api call in getCityInformation
@@ -79,6 +82,53 @@ type City2 struct {
 	Population int    `json:"population"`
 }
 
+//struct for third api call in getRouteBetweenCoordinates
+type Route struct {
+	Routes []struct {
+		ID       string `json:"id"`
+		Sections []struct {
+			ID        string `json:"id"`
+			Type      string `json:"type"`
+			Departure struct {
+				Time  time.Time `json:"time"`
+				Place struct {
+					Type     string `json:"type"`
+					Location struct {
+						Lat float64 `json:"lat"`
+						Lng float64 `json:"lng"`
+					} `json:"location"`
+					OriginalLocation struct {
+						Lat float64 `json:"lat"`
+						Lng float64 `json:"lng"`
+					} `json:"originalLocation"`
+				} `json:"place"`
+			} `json:"departure"`
+			Arrival struct {
+				Time  time.Time `json:"time"`
+				Place struct {
+					Type     string `json:"type"`
+					Location struct {
+						Lat float64 `json:"lat"`
+						Lng float64 `json:"lng"`
+					} `json:"location"`
+					OriginalLocation struct {
+						Lat float64 `json:"lat"`
+						Lng float64 `json:"lng"`
+					} `json:"originalLocation"`
+				} `json:"place"`
+			} `json:"arrival"`
+			Summary struct {
+				Duration     int `json:"duration"`
+				Length       int `json:"length"`
+				BaseDuration int `json:"baseDuration"`
+			} `json:"summary"`
+			Transport struct {
+				Mode string `json:"mode"`
+			} `json:"transport"`
+		} `json:"sections"`
+	} `json:"routes"`
+}
+
 func getCityInformationURL(input string) (output string) {
 	response, err := http.Get("https://api.teleport.org/api/cities/?search=" + input)
 	if err != nil {
@@ -114,4 +164,23 @@ func getCityCoordinations(input string) (latitude float64, longitude float64) {
 	}
 	return currentCity2.Location.Latlon.Latitude, currentCity2.Location.Latlon.Longitude
 
+}
+
+func getRouteBetweenCoordinates(originLatitude float64, originLongitude float64, destinationLatitude float64, destinationLongitude float64) (output int) {
+	request := fmt.Sprintf("https://router.hereapi.com/v8/routes?transportMode=car&origin=%f,%f&destination=%f,%f&return=summary&apikey=%s", originLatitude, originLongitude, destinationLatitude, destinationLongitude, os.Getenv("HERE_Routing_API"))
+	response, err := http.Get(request)
+	if err != nil {
+		log.Fatal(err)
+	}
+	responseData, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var route Route
+	err = json.Unmarshal(responseData, &route)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return route.Routes[0].Sections[0].Summary.Length / 1000
 }
