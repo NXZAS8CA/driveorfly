@@ -166,8 +166,9 @@ func getCityCoordinations(input string) (latitude float64, longitude float64) {
 
 }
 
-func getRouteBetweenCoordinates(originLatitude float64, originLongitude float64, destinationLatitude float64, destinationLongitude float64) (output int) {
-	request := fmt.Sprintf("https://router.hereapi.com/v8/routes?transportMode=car&origin=%f,%f&destination=%f,%f&return=summary&apikey=%s", originLatitude, originLongitude, destinationLatitude, destinationLongitude, os.Getenv("HERE_Routing_API"))
+func getRouteBetweenCoordinates(transportationMode string, originLatitude float64, originLongitude float64, destinationLatitude float64, destinationLongitude float64) (output int) {
+	request := fmt.Sprintf("https://router.hereapi.com/v8/routes?transportMode=%s&origin=%f,%f&destination=%f,%f&return=summary&apikey=%s", transportationMode, originLatitude, originLongitude, destinationLatitude, destinationLongitude, os.Getenv("HERE_Routing_API"))
+
 	response, err := http.Get(request)
 	if err != nil {
 		log.Fatal(err)

@@ -14,7 +14,7 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 	//api handler call for destination city
 	destinationCityLatitude, destinationCityLongitude := getCityCoordinations(getCityInformationURL(r.FormValue("destinationCity")))
 	fmt.Println(destinationCityLatitude, destinationCityLongitude)
-	fmt.Println(getRouteBetweenCoordinates(originCityLatitude, originCityLongitude, destinationCityLatitude, destinationCityLongitude))
+	fmt.Println(getRouteBetweenCoordinates("car", originCityLatitude, originCityLongitude, destinationCityLatitude, destinationCityLongitude))
 
 }
 
