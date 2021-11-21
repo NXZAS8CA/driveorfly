@@ -7,14 +7,15 @@ import (
 )
 
 func formHandler(w http.ResponseWriter, r *http.Request) {
-	//api handler call for current city
-	originCityLatitude, originCityLongitude := getCityCoordinations(getCityInformationURL(r.FormValue("currentCity")))
-	fmt.Println(originCityLatitude, originCityLongitude)
+	//api handler call for current City using here geocode api
+	currentCityLat, currentCityLng := getCityCoordinates(r.FormValue("currentCity"))
 
-	//api handler call for destination city
-	destinationCityLatitude, destinationCityLongitude := getCityCoordinations(getCityInformationURL(r.FormValue("destinationCity")))
-	fmt.Println(destinationCityLatitude, destinationCityLongitude)
-	fmt.Println(getRouteBetweenCoordinates("car", originCityLatitude, originCityLongitude, destinationCityLatitude, destinationCityLongitude))
+	//api handler call for destination City using here geocode api
+	destinationCityLat, destinationCityLng := getCityCoordinates(r.FormValue("destinationCity"))
+	RouteDuration, RouteLength := getRouteBetweenCoordinates(currentCityLat, currentCityLng, destinationCityLat, destinationCityLng)
+
+	//Print out current route
+	fmt.Println(fmt.Sprintf("Duration: %d hours, Length: %d kilometres", RouteDuration, RouteLength))
 
 }
 
